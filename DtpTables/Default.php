@@ -39,12 +39,31 @@ if(isset($_GET['info'])){
 
 	$id_of_tables = [
 	    "Inspector" => "inspector_id",
-	    "Transport" => "id_transp",
+	    "Transport" => ["id_transp", "Transport_DTP"],
 	    "Uchastniki" => "id_uchastnika",
 	    "Svedenia_DTP" => "dtp_id",
 	    "Svideteli" => "id_svideteley",
 	    "Postradavshie" => "id_postradavshego",
 	];
+
+	$ids_of_all_tables = [
+	    "Inspector" => ["inspector_id", ""],
+	    "Transport" => ["id_transp", "Transport_DTP"],
+	    "Uchastniki" => ["id_uchastnika", "Uchastniki_DTP"],
+	    "Svedenia_DTP" => ["dtp_id", "Transport_DTP"],
+	    "Svideteli" => ["id_svideteley", "Svideteli_DTP"],
+	    "Postradavshie" => ["id_postradavshego", "Postradavshie_DTP"],
+	];
+
+
+	$id = $id_of_tables["Transport"][0];
+	$ref_table = $ids_of_all_tables["Transport"][1];
+
+	$query = 'SELECT * FROM '.$ref_table.' WHERE '.$id.'=9';
+	$res = mysqli_query($connection, $query);
+	$row = mysqli_fetch_array($res);
+	echo "<br>".$row[0];
+
 	
 	echo $id_of_tables[$table_name];
 
@@ -173,16 +192,29 @@ if (isset($_POST['table_name']) && isset($_POST['deleted_id']))
 
 	//--- также как и для INSERT - у каждой таблицы свое имя столбца ID, чтобы составить верный запрос WHERE добавляем это имя
 	$ids_of_all_tables = [
-	    "Inspector" => "inspector_id",
-	    "Transport" => "id_transp",
-	    "Uchastniki" => "id_uchastnika",
-	    "Svedenia_DTP" => "dtp_id",
-	    "Svideteli" => "id_svideteley",
-	    "Postradavshie" => "id_postradavshego",
+	    "Inspector" => ["inspector_id", "", ""],
+	    "Transport" => ["id_transp", "Transport_DTP", "IDT"],
+	    "Uchastniki" => ["id_uchastnika", "Uchastniki_DTP" , "IDU"],
+	    "Svedenia_DTP" => ["dtp_id", "Transport_DTP",  "IDT"],
+	    "Svideteli" => ["id_svideteley", "Svideteli_DTP", "IDS"],
+	    "Postradavshie" => ["id_postradavshego", "Postradavshie_DTP", "IDP"],
 	];
 
-	$id_of_table = $ids_of_all_tables[$table_name];
+	$id_of_table = $ids_of_all_tables[$table_name][0];
+	$ref_table = $ids_of_all_tables[$table_name][1];
+	$ref_id_name = $ids_of_all_tables[$table_name][2];
+
+	$query = 'SELECT * FROM '.$ref_table.' WHERE '.$id_of_table.'='.$rowId;
+	echo $query;
+	$res = mysqli_query($connection, $query);
+	$row = mysqli_fetch_array($res);
+	$ref_id = $row[0];
+
 	
+	$query = 'DELETE FROM '.$ref_table.' WHERE '.$ref_id_name.'='.$ref_id;
+	echo $query;
+	$res = mysqli_query($connection, $query);	
+
 	$query = 'DELETE FROM '.$table_name.' WHERE '.$id_of_table.'='.$rowId;
 	echo $query;
 	$res = mysqli_query($connection, $query);	
