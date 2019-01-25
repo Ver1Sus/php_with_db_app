@@ -1,0 +1,20 @@
+table{
+		font-family: "Lucida Sans Unicode";
+		font-size:14px;
+		border-collapse: collapse;
+		text-align: center;
+	}
+	th{
+		background: #AFCDE7;
+		color: white;
+		padding: 10px 15px;
+	}
+	
+	td{
+		background: #D8E6F3;
+		color: black;
+		padding: 10px 15px;
+	}
+.elem{
+	cursor:pointer;
+}
